@@ -4,6 +4,8 @@ This repository contains the backend for the ActionEngine project.
 
 This is originally built off of [browser-use/web-ui](https://github.com/browser-use/web-ui), but modified to fit our usecase.
 
+Do not use the Dockerfile for now. It is not up to date. The instructions below are for MacOS.
+
 ## Getting Started
 
 Pre-requisites:
@@ -25,8 +27,30 @@ Install dependencies
 uv pip install -r requirements.txt
 ```
 
-Symlink the Google Chrome binary to your local bin directory. We reference this in supervisord.conf and expect that `google-chrome` is in your path.
+Update .env file with the correct values. Add your own values for OPENAI_API_KEY, OPENAI_ENDPOINT, OPENAI_MODEL_NAME
 
 ```bash
-sudo ln -s /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome /usr/local/bin/google-chrome
+cp .env.example .env
 ```
+
+Ensure Google Chrome is installed in the default location `/Applications/Google Chrome.app`
+
+Clone NoVNC into the `opt` directory
+
+````bash
+git clone https://github.com/novnc/noVNC.git /opt/novnc \
+    && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify \
+    && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
+```
+
+Install supervisord
+
+```bash
+uv pip install supervisor
+```
+
+Source the environment variables and run the server
+
+```bash
+source .env && supervisord -c supervisord.conf
+````

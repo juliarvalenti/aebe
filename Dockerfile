@@ -71,11 +71,6 @@ RUN playwright install-deps
 # Copy the application code
 COPY . .
 
-# Start D-Bus service
-RUN service dbus start
-# Set environment variables for D-Bus
-ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV BROWSER_USE_LOGGING_LEVEL=info
