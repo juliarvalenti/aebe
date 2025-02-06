@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     fonts-liberation \
     dbus \
+    dbus-x11 \
     xauth \
     xvfb \
     x11vnc \
@@ -46,9 +47,6 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/novnc/noVNC.git /opt/novnc \
     && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify \
     && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
-
-# Install D-Bus
-RUN apt-get update && apt-get install -y dbus-x11
 
 # Install Chrome
 RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
@@ -71,6 +69,13 @@ RUN playwright install-deps
 # Copy the application code
 COPY . .
 
+# Install D-Bus
+RUN apt-get update && apt-get install -y dbus
+# Set environment variables for D-Bus
+ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+# Start D-Bus service
+RUN dbus-uuidgen > /etc/machine-id && service dbus start
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV BROWSER_USE_LOGGING_LEVEL=info
@@ -87,6 +92,6 @@ ENV RESOLUTION_HEIGHT=1080
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 7788 6080 5900
+EXPOSE 7788 6080 5900 9222
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

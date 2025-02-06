@@ -38,7 +38,6 @@ async def chat_endpoint(websocket: WebSocket):
             config["task"] = task
 
             async for update in run_with_stream(
-                agent_type=config["agent_type"],
                 llm_provider=config["llm_provider"],
                 llm_model_name=config["llm_model_name"],  
                 llm_temperature=config["llm_temperature"],

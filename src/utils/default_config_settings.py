@@ -9,8 +9,9 @@ load_dotenv()
 
 def default_config():
     """Prepare the default configuration"""
+
+    # TODO Turn these all into environment variables
     return {
-        "agent_type": "custom",
         "max_steps": 100,
         "max_actions_per_step": 10,
         "use_vision": False,
@@ -21,8 +22,8 @@ def default_config():
         "llm_base_url": os.getenv("OPENAI_ENDPOINT", "https://api.openai.com/v1"),
         "llm_api_key": os.getenv("OPENAI_API_KEY", ""),
         # "use_own_browser": os.getenv("CHROME_PERSISTENT_SESSION", "false").lower() == "true",
-        "use_own_browser": True,
         # "keep_browser_open": False,
+        "use_own_browser": False,
         "keep_browser_open": True,    
         "headless": False,
         "disable_security": True,

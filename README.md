@@ -4,19 +4,19 @@ This repository contains the backend for the ActionEngine project.
 
 This is originally built off of [browser-use/web-ui](https://github.com/browser-use/web-ui), but modified to fit our usecase.
 
-Do not use the Dockerfile for now. It is not up to date. The instructions below are for MacOS.
-
 ## Getting Started
 
 Pre-requisites:
 
-- uv
+```
+brew install uv
+```
 
-venv
+Set up venv
 
 ```bash
 uv venv --python 3.11
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 Set up vscode by hitting CTRL+P and typing `>Python: Select Interpreter` and selecting the venv python.
@@ -27,30 +27,22 @@ Install dependencies
 uv pip install -r requirements.txt
 ```
 
-Update .env file with the correct values. Add your own values for OPENAI_API_KEY, OPENAI_ENDPOINT, OPENAI_MODEL_NAME
+Copy .env
 
 ```bash
 cp .env.example .env
 ```
 
-Ensure Google Chrome is installed in the default location `/Applications/Google Chrome.app`
+Add your AI credentials to the .env file
 
-Clone NoVNC into the `opt` directory
-
-````bash
-git clone https://github.com/novnc/noVNC.git /opt/novnc \
-    && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify \
-    && ln -s /opt/novnc/vnc.html /opt/novnc/index.html
-```
-
-Install supervisord
+Run the noVNC server and other services with docker-compose
 
 ```bash
-uv pip install supervisor
+CHROME_PERSISTENT_SESSION=True && docker compose up --build
 ```
 
-Source the environment variables and run the server
+In another tab, run the API server
 
 ```bash
-source .env && supervisord -c supervisord.conf
-````
+CHROME_PERSISTENT_SESSION=True && uvicorn backend.main:app --host 127.0.0.1 --port 7788 --reload
+```
